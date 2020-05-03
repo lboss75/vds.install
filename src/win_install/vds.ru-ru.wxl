@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WixLocalization Culture="ru-ru" xmlns="http://schemas.microsoft.com/wix/2006/localization">
+  <String Id="ApplicationName">Виртуальное Хранилище Данных</String>
+  <String Id="MessengerName">VDS Мессенджер</String>
+  <String Id="DiskName">VDS Диск</String>
+  <String Id="WalletName">VDS Кошелёк</String>
+  <String Id="ManufacturerName">АйВи Консалтинг</String>
+  <String Id="Launch">Запустить</String>
+</WixLocalization>

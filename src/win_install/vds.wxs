@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
+ <?define ProductVersion="0.0.1.0" ?>
+ <?define UpgradeCode="f7e1769e-ee86-4dcc-a1c1-bf9d848cf8ec"?>
+
+ <Product
+	Id="*"
+	Name="!(loc.ApplicationName)"
+	Language="$(var.Language)"
+	Version="$(var.ProductVersion)"
+	Manufacturer="!(loc.ManufacturerName)"
+	UpgradeCode="$(var.UpgradeCode)">
+    <Package InstallerVersion="200" Compressed="yes" InstallScope="perUser" InstallPrivileges="limited"/>
+    <Media Id="1" Cabinet="media1.cab" EmbedCab="yes" />
+
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="LocalAppDataFolder">
+        <Directory Id="INSTALLLOCATION" Name="IVySoft">
+          <Component Id="IVySoftRemove" Guid="db889c07-ff4a-44a6-8e6e-1e269ca8a3ca">
+             <CreateFolder />
+             <RemoveFolder Id="INSTALLLOCATION" On="uninstall"/>
+             <RegistryValue Root="HKCU" Key="Software\IVySoft\VDS" Name="ivysoft_folder" Type="string" Value="[INSTALLLOCATION]" KeyPath="yes"/>
+          </Component>
+          <Directory Id="VdsDir" Name="VDS">
+            <Component Id="VdsDirRemove" Guid="e3197569-471e-41d7-8edd-d5442478006c">
+	       <CreateFolder />
+               <RemoveFolder Id="VdsDir" On="uninstall"/>
+               <RegistryValue Root="HKCU" Key="Software\IVySoft\VDS" Name="vds_folder" Type="string" Value="[VdsDir]" KeyPath="yes"/>
+            </Component>
+            <Directory Id="VdsServerDir" Name="Server">
+              <Component Id="VdsServerComponent" Guid="400d979c-3e3a-4373-9291-fe3a8171760c">
+                <File Id='vds_windows_exe' DiskId='1' Source='$(var.SourceDir)\app\vds_windows\$(var.Config)\vds_windows.exe'/>
+                <RemoveFolder Id="VdsServerDir" On="uninstall"/>
+           	<RegistryValue Root="HKCU" Key="Software\IVySoft\VDS" Name="server" Type="string" Value="[VdsServerDir]" KeyPath="yes"/>
+              </Component>
+            </Directory>
+            <Directory Id="VdsUIDir" Name="UI">
+              <Component Id="UIComponent" Guid="2b83b01a-9138-4a23-8b1f-f27f6296966e">
+                <File Id='BouncyCastle_Crypto_dll' DiskId='1' Source='$(var.SourceDirTools)\src\client\IVySoft.VDS.Client.UI.WPF\bin\$(var.Config)\netcoreapp3.1\BouncyCastle.Crypto.dll'/>
+                <File Id='Newtonsoft_Json_dll' DiskId='1' Source='$(var.SourceDirTools)\src\client\IVySoft.VDS.Client.UI.WPF\bin\$(var.Config)\netcoreapp3.1\Newtonsoft.Json.dll'/>
+
+                <File Id='IVySoft_VDS_Client_UI_WPF_Common_dll' DiskId='1' Source='$(var.SourceDirTools)\src\client\IVySoft.VDS.Client.UI.WPF.Common\bin\$(var.Config)\netcoreapp3.1\IVySoft.VDS.Client.UI.WPF.Common.dll'/>
+                <File Id='IVySoft_VDS_Client_UI_Logic_dll' DiskId='1' Source='$(var.SourceDirTools)\src\client\IVySoft.VDS.Client.UI.Logic\bin\$(var.Config)\netstandard2.0\IVySoft.VDS.Client.UI.Logic.dll'/>
+                <File Id='IVySoft_VDS_Client_dll' DiskId='1' Source='$(var.SourceDirTools)\src\client\IVySoft.VDS.Client\bin\$(var.Config)\netstandard2.0\IVySoft.VDS.Client.dll'/>
+                <File Id='IVySoft_VPlatform_Network_dll' DiskId='1' Source='$(var.SourceDirTools)\src\client\IVySoft.VDS.Client\bin\$(var.Config)\netstandard2.0\IVySoft.VPlatform.Network.dll'/>
+
+                <File Id='IVySoft_VDS_Client_UI_WPF_exe' DiskId='1' Source='$(var.SourceDirTools)\src\client\IVySoft.VDS.Client.UI.WPF\bin\$(var.Config)\netcoreapp3.1\IVySoft.VDS.Client.UI.WPF.exe'/>
+                <File Id='IVySoft_VDS_Client_UI_WPF_dll' DiskId='1' Source='$(var.SourceDirTools)\src\client\IVySoft.VDS.Client.UI.WPF\bin\$(var.Config)\netcoreapp3.1\IVySoft.VDS.Client.UI.WPF.dll'/>
+                <File Id='IVySoft_VDS_Client_UI_WPF_runtimeconfig_json' DiskId='1' Source='$(var.SourceDirTools)\src\client\IVySoft.VDS.Client.UI.WPF\bin\$(var.Config)\netcoreapp3.1\IVySoft.VDS.Client.UI.WPF.runtimeconfig.json'/>
+
+                <File Id='IVySoft_VDS_Client_UI_WPF_Disk_exe' DiskId='1' Source='$(var.SourceDirTools)\src\client\IVySoft.VDS.Client.UI.WPF.Disk\bin\$(var.Config)\netcoreapp3.1\IVySoft.VDS.Client.UI.WPF.Disk.exe'/>
+                <File Id='IVySoft_VDS_Client_UI_WPF_Disk_dll' DiskId='1' Source='$(var.SourceDirTools)\src\client\IVySoft.VDS.Client.UI.WPF.Disk\bin\$(var.Config)\netcoreapp3.1\IVySoft.VDS.Client.UI.WPF.Disk.dll'/>
+                <File Id='IVySoft_VDS_Client_UI_WPF_Disk_runtimeconfig_json' DiskId='1' Source='$(var.SourceDirTools)\src\client\IVySoft.VDS.Client.UI.WPF.Disk\bin\$(var.Config)\netcoreapp3.1\IVySoft.VDS.Client.UI.WPF.Disk.runtimeconfig.json'/>
+                <RemoveFolder Id="VdsUIDir" On="uninstall"/>
+           	<RegistryValue Root="HKCU" Key="Software\IVySoft\VDS" Name="ui" Type="string" Value="[VdsUIDir]" KeyPath="yes"/>
+              </Component>
+            </Directory>           
+          </Directory>
+        </Directory>
+      </Directory>
+
+      <Directory Id="ProgramMenuFolder">
+        <Directory Id="AppMenu" Name="!(loc.ApplicationName)">
+          <Component Id="ApplicationShortcutMessanger" Guid="f939cf34-3fb8-4d22-952c-36422bbf667b">
+           <Shortcut Id="ShortcutMessanger"
+            Name="!(loc.MessengerName)"
+            Description="!(loc.ApplicationName)"
+            Target="[VdsUIDir]IVySoft.VDS.Client.UI.WPF.exe"
+            WorkingDirectory="VdsUIDir"/>
+           <Shortcut Id="ShortcutDisk"
+            Name="!(loc.DiskName)"
+            Description="!(loc.ApplicationName)"
+            Target="[VdsUIDir]IVySoft.VDS.Client.UI.WPF.Disk.exe"
+            WorkingDirectory="VdsUIDir"/>
+           <RemoveFolder Id="AppMenu" On="uninstall"/>
+           <RegistryValue Root="HKCU" Key="Software\IVySoft\VDS" Name="AppMenu" Type="string" Value="[AppMenu]" KeyPath="yes"/>
+          </Component>
+        </Directory>
+      </Directory>
+
+      <Directory Id="StartupFolder">
+        <Component Id="ApplicationShortcutVdsServer" Guid="89d696cf-c10c-443a-91ac-029005f1782b">
+          <Shortcut Id="ShortcutVdsServer"
+            Name="VDS Server"
+            Description="!(loc.ApplicationName)"
+            Target="[VdsServerDir]vds_windows.exe"
+            WorkingDirectory="INSTALLLOCATION"/>
+          <RegistryKey Root="HKCU" Key="Software\IVySoft\VDS">
+	    <RegistryValue Name="ShortCutStartUp" Type="string" Value="[StartupFolder]" KeyPath="yes"  />
+          </RegistryKey>
+         </Component>
+      </Directory>
+    </Directory>
+
+    <Feature Id="ProductFeature" Title="SetupProject1" Level="1">
+   	<ComponentRef Id="VdsServerComponent" />
+   	<ComponentRef Id="UIComponent" />
+   	<ComponentRef Id="ApplicationShortcutMessanger" />
+   	<ComponentRef Id="ApplicationShortcutVdsServer" />
+
+   	<ComponentRef Id="VdsDirRemove" />
+   	<ComponentRef Id="IVySoftRemove" />
+    </Feature>
+
+    <Property Id="WIXUI_INSTALLDIR" Value="INSTALLLOCATION" ></Property>
+
+    <CustomAction Id="EXECUTE_AFTER_FINALIZE"                  
+              Execute="immediate" 
+              Impersonate="no"
+              Return="asyncNoWait"
+              FileKey="vds_windows_exe"
+              ExeCommand="" />
+     <util:CloseApplication
+	      Id="CloseServe"
+              CloseMessage="yes"
+              Target="vds_windows_exe"
+              ElevatedCloseMessage="yes"
+              RebootPrompt="no"/>
+     <InstallExecuteSequence>
+      <Custom Action="WixCloseApplications" After="RemoveExistingProducts" />
+      <RemoveExistingProducts After="InstallInitialize"/>
+      <Custom Action="EXECUTE_AFTER_FINALIZE" After="InstallFinalize">NOT Installed</Custom>
+     </InstallExecuteSequence>
+
+
+
+    <WixVariable Id="WixUILicenseRtf" Overridable="yes" Value="License.$(var.Culture).rtf"/>
+    <UI>
+        <UIRef Id="WixUI_Minimal" />
+        <Publish Dialog="ExitDialog" 
+            Control="Finish" 
+            Event="DoAction" 
+            Value="LaunchApplication">WIXUI_EXITDIALOGOPTIONALCHECKBOX = 1 and NOT Installed</Publish>
+    </UI>
+    <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOXTEXT" Value="!(loc.Launch) !(loc.MessengerName)" />
+
+    <!-- Step 3: Include the custom action -->
+    <Property Id="WixShellExecTarget" Value="[#IVySoft_VDS_Client_UI_WPF_exe]" />
+    <CustomAction Id="LaunchApplication" 
+        BinaryKey="WixCA" 
+        DllEntry="WixShellExec"
+        Impersonate="yes" />
+  </Product>
+</Wix>

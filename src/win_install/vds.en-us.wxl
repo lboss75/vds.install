@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WixLocalization Culture="en-us" xmlns="http://schemas.microsoft.com/wix/2006/localization">
+  <String Id="ApplicationName">Virtual Distributed Storage</String>
+  <String Id="MessengerName">VDS Messanger</String>
+  <String Id="DiskName">VDS Disk</String>
+  <String Id="WalletName">VDS Wallet</String>
+  <String Id="ManufacturerName">IVy Consulting</String>
+  <String Id="Launch">Launch</String>
+</WixLocalization>
