@@ -52,6 +52,11 @@
                 <File Id='IVySoft_VDS_Client_UI_WPF_Disk_exe' DiskId='1' Source='$(var.SourceDirTools)\src\client\IVySoft.VDS.Client.UI.WPF.Disk\bin\$(var.Config)\netcoreapp3.1\IVySoft.VDS.Client.UI.WPF.Disk.exe'/>
                 <File Id='IVySoft_VDS_Client_UI_WPF_Disk_dll' DiskId='1' Source='$(var.SourceDirTools)\src\client\IVySoft.VDS.Client.UI.WPF.Disk\bin\$(var.Config)\netcoreapp3.1\IVySoft.VDS.Client.UI.WPF.Disk.dll'/>
                 <File Id='IVySoft_VDS_Client_UI_WPF_Disk_runtimeconfig_json' DiskId='1' Source='$(var.SourceDirTools)\src\client\IVySoft.VDS.Client.UI.WPF.Disk\bin\$(var.Config)\netcoreapp3.1\IVySoft.VDS.Client.UI.WPF.Disk.runtimeconfig.json'/>
+
+                <File Id='IVySoft_VDS_Client_UI_WPF_Wallet_exe' DiskId='1' Source='$(var.SourceDirTools)\src\client\IVySoft.VDS.Client.UI.WPF.Wallet\bin\$(var.Config)\netcoreapp3.1\IVySoft.VDS.Client.UI.WPF.Wallet.exe'/>
+                <File Id='IVySoft_VDS_Client_UI_WPF_Wallet_dll' DiskId='1' Source='$(var.SourceDirTools)\src\client\IVySoft.VDS.Client.UI.WPF.Wallet\bin\$(var.Config)\netcoreapp3.1\IVySoft.VDS.Client.UI.WPF.Wallet.dll'/>
+                <File Id='IVySoft_VDS_Client_UI_WPF_Wallet_runtimeconfig_json' DiskId='1' Source='$(var.SourceDirTools)\src\client\IVySoft.VDS.Client.UI.WPF.Wallet\bin\$(var.Config)\netcoreapp3.1\IVySoft.VDS.Client.UI.WPF.Wallet.runtimeconfig.json'/>
+
                 <RemoveFolder Id="VdsUIDir" On="uninstall"/>
            	<RegistryValue Root="HKCU" Key="Software\IVySoft\VDS" Name="ui" Type="string" Value="[VdsUIDir]" KeyPath="yes"/>
               </Component>
@@ -111,14 +116,14 @@
               Return="asyncNoWait"
               FileKey="vds_windows_exe"
               ExeCommand="" />
-     <util:CloseApplication
-	      Id="CloseServe"
-              CloseMessage="yes"
-              Target="vds_windows_exe"
-              ElevatedCloseMessage="yes"
-              RebootPrompt="no"/>
+    <CustomAction Id="CloseTray"                  
+              Execute="immediate" 
+              Impersonate="no"
+              Return="ignore"
+              FileKey="vds_windows_exe"
+              ExeCommand="--stop" />
      <InstallExecuteSequence>
-      <Custom Action="WixCloseApplications" After="RemoveExistingProducts" />
+      <Custom Action="CloseTray" Before="InstallValidate">Installed</Custom>
       <RemoveExistingProducts After="InstallInitialize"/>
       <Custom Action="EXECUTE_AFTER_FINALIZE" After="InstallFinalize">NOT Installed</Custom>
      </InstallExecuteSequence>
@@ -126,6 +131,8 @@
 
 
     <WixVariable Id="WixUILicenseRtf" Overridable="yes" Value="License.$(var.Culture).rtf"/>
+    <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOXTEXT" Value="!(loc.Launch) !(loc.WalletName)" />
+    <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOX" Value="1" />
     <UI>
         <UIRef Id="WixUI_Minimal" />
         <Publish Dialog="ExitDialog" 
@@ -133,10 +140,9 @@
             Event="DoAction" 
             Value="LaunchApplication">WIXUI_EXITDIALOGOPTIONALCHECKBOX = 1 and NOT Installed</Publish>
     </UI>
-    <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOXTEXT" Value="!(loc.Launch) !(loc.MessengerName)" />
 
     <!-- Step 3: Include the custom action -->
-    <Property Id="WixShellExecTarget" Value="[#IVySoft_VDS_Client_UI_WPF_exe]" />
+    <Property Id="WixShellExecTarget" Value="[#IVySoft_VDS_Client_UI_WPF_Wallet_exe]" />
     <CustomAction Id="LaunchApplication" 
         BinaryKey="WixCA" 
         DllEntry="WixShellExec"
