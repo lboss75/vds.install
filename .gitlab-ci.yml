@@ -1,0 +1,105 @@
+stages:
+    - build
+    - deploy
+
+build-ubuntu:
+    image: ubuntu:16.04
+    stage: build
+    script:
+        - apt-get -qq update
+        - apt-get -qq install -y wget sudo git cmake clang-6.0 libgtk-3-dev subversion
+        - mkdir dist
+        - git clone https://gitlab.com/ivsoft/vds.git vds
+        - git clone https://gitlab.com/ivsoft/vplatform.git vplatform
+        - git clone https://gitlab.com/ivsoft/vds.net.git vds.net
+        - cd vds
+        - ./build_dep.sh
+        - mkdir build
+        - ./build.sh
+        - cp build/app/vds_ws_server/vds_ws_server ../dist
+        - cp /usr/lib/libc++.so.1 ../dist
+        - cp /usr/lib/libc++.so ../dist
+        - cp /usr/lib/libc++abi.so.1 ../dist
+        - cp externals/openssl-out/lib/libcrypto.so.1.1 ../dist
+        - cp externals/openssl-out/lib/libssl.so.1.1 ../dist
+        - cd ../vds.net
+        - wget https://dot.net/v1/dotnet-install.sh
+        - sudo chmod a+x dotnet-install.sh
+        - sudo ./dotnet-install.sh -c 3.1
+        - export DOTNET_ROOT=$HOME/.dotnet
+        - export PATH=$PATH:$HOME/.dotnet
+        - export DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1
+        - cd src/client/IVySoft.VDS.Client.Cmd
+        - dotnet build
+        - dotnet publish -c Release
+        - cp bin/Release/netcoreapp3.1/publish/* ../../../../dist/
+        - cd ../../../../src/rpm
+        - rpmbuild -ba vds.spec
+
+build-arm32:
+    stage: build
+    script:
+        - mkdir dist_arm32
+        - git clone https://gitlab.com/ivsoft/vds.git vds
+        - git clone https://gitlab.com/ivsoft/vplatform.git vplatform
+        - git clone https://gitlab.com/ivsoft/vds.net.git vds.net
+        - cd vds
+        - mkdir build
+        - ./build.sh
+        - cp build/app/vds_ws_server/vds_ws_server ../dist_arm32
+        - cp /usr/lib/libc++.so.1 ../dist_arm32
+        - cp /usr/lib/libc++.so ../dist_arm32
+        - cp /usr/lib/libc++abi.so.1 ../dist_arm32
+        - cp externals/openssl-out/lib/libcrypto.so.1.1 ../dist_arm32
+        - cp externals/openssl-out/lib/libssl.so.1.1 ../dist_arm32
+        - cd ../vds.net
+        - export DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1
+        - cd src/client/IVySoft.VDS.Client.Cmd
+        - dotnet build
+        - dotnet publish -c Release
+        - cp bin/Release/netcoreapp3.1/publish/* ../../../../dist_arm32/
+        - cd ../../../../src/rpm
+        - rpmbuild -ba vds.spec
+    tags:
+        - ARM32
+
+
+#test-ubuntu:
+#    image: ubuntu:16.04
+#    stage: test
+#    script:
+#        - apt-get -qq update
+#        - apt-get -qq install -y gcovr 
+#        - build/tests/test_vds_core/test_vds_core
+#        - build/tests/test_vds_crypto/test_vds_crypto
+#        - build/tests/test_vds_data/test_vds_data
+#        - build/tests/test_vds_database/test_vds_database
+#        - build/tests/test_vds_dht_network/test_vds_dht_network
+#        - build/tests/test_vds_network/test_vds_network
+#        - build/tests/test_vds_parser/test_vds_parser
+#        - build/tests/test_vds_scenarios/test_vds_scenarios
+#        - build/tests/test_vds_user_manager/test_vds_user_manager
+
+
+#build-android:
+#    image: ubuntu:16.04
+#    stage: build
+#    script:
+#        - apt-get -qq update
+#        - apt-get -qq install -y git cmake clang-6.0 libgtk-3-dev subversion wget unzip
+#        - wget -q -P ~/ https://dl.google.com/android/repository/android-ndk-r20-linux-x86_64.zip
+#        - mkdir -p ~/Android/Sdk/
+#        - unzip -q ~/android-ndk-r20-linux-x86_64.zip -d ~/Android/Sdk/
+#        - ./build_android.sh
+#    artifacts:
+#        paths:
+#          - build/tests/test_vds_core/test_vds_core
+#          - build/tests/test_vds_crypto/test_vds_crypto
+#          - build/tests/test_vds_data/test_vds_data
+#          - build/tests/test_vds_database/test_vds_database
+#          - build/tests/test_vds_dht_network/test_vds_dht_network
+#          - build/tests/test_vds_network/test_vds_network
+#          - build/tests/test_vds_parser/test_vds_parser
+#          - build/tests/test_vds_scenarios/test_vds_scenarios
+#          - build/tests/test_vds_user_manager/test_vds_user_manager
+#          - build/app/vds_web_server/vds_web_server
